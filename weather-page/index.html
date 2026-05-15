@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Weather in Vienna Today</title>
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header" aria-label="Site header">
+        <a class="site-header__brand" href="#" aria-label="Weather home">
+          <span class="site-header__name">Weather</span>
+        </a>
+
+        <form class="site-header__search" action="#" role="search">
+          <label class="site-header__search-label" for="location-search">Search location</label>
+          <span class="site-header__search-icon" aria-hidden="true"></span>
+          <input
+            class="site-header__search-input"
+            id="location-search"
+            type="search"
+            value=""
+            placeholder="Search location"
+          />
+        </form>
+
+        <button class="site-header__units" type="button" aria-label="Change units and region">
+          °C, EN
+          <span class="site-header__chevron" aria-hidden="true"></span>
+        </button>
+      </header>
+
+      <main>
+        <section class="weather-hero" aria-label="Current weather summary">
+          <div class="weather-hero__sky" aria-hidden="true">
+            <span class="weather-hero__cloud weather-hero__cloud--one"></span>
+            <span class="weather-hero__cloud weather-hero__cloud--two"></span>
+            <span class="weather-hero__cloud weather-hero__cloud--three"></span>
+          </div>
+
+          <div class="weather-hero__content">
+            <p class="weather-hero__meta">
+              Fri, May 15, 19:47
+              <span>Austria / Vienna Land</span>
+            </p>
+            <h1 class="weather-hero__title">Partly cloudy in Vienna, +13°C</h1>
+          </div>
+
+          <aside class="weather-hero__bubble" aria-label="Weather informer promotion">
+            <p>Free weather widget for your website</p>
+            <button type="button" aria-label="Close widget preview">×</button>
+          </aside>
+
+          <nav class="weather-tabs" aria-label="Forecast navigation">
+            <a class="weather-tabs__item" href="#">Yesterday</a>
+            <a class="weather-tabs__item weather-tabs__item--active" href="#">Now</a>
+            <a class="weather-tabs__item" href="#">Hourly</a>
+            <a class="weather-tabs__item" href="#">Today</a>
+            <a class="weather-tabs__item" href="#">Tomorrow</a>
+            <a class="weather-tabs__item" href="#">3 days</a>
+            <a class="weather-tabs__item" href="#">Weekend</a>
+            <a class="weather-tabs__item" href="#">Week</a>
+            <a class="weather-tabs__item" href="#">10 days</a>
+            <a class="weather-tabs__item" href="#">2 weeks</a>
+            <a class="weather-tabs__item" href="#">Month</a>
+            <a class="weather-tabs__item weather-tabs__item--separated" href="#">Informer</a>
+          </nav>
+        </section>
+
+        <div class="content-grid">
+          <section class="forecast-main" aria-labelledby="today-heading">
+            <h2 class="section-title" id="today-heading">Weather in Vienna today</h2>
+
+            <div class="daily-grid" aria-label="Daily forecast">
+              <article class="daily-card">
+                <div>
+                  <h3 class="daily-card__date">Thu, May 14</h3>
+                  <p class="daily-card__label">Yesterday</p>
+                </div>
+                <div class="weather-icon weather-icon--partly-rain" aria-label="Partly cloudy with rain">
+                  <span class="weather-icon__sun"></span>
+                  <span class="weather-icon__cloud"></span>
+                  <span class="weather-icon__rain"></span>
+                </div>
+                <div class="daily-card__temps">
+                  <span class="temp-step temp-step--low">+10</span>
+                  <span class="temp-step temp-step--high">+15</span>
+                </div>
+              </article>
+
+              <article class="daily-card">
+                <div>
+                  <h3 class="daily-card__date">Fri, May 15</h3>
+                  <p class="daily-card__label">Today</p>
+                </div>
+                <div class="weather-icon weather-icon--partly-rain" aria-label="Partly cloudy with showers">
+                  <span class="weather-icon__sun"></span>
+                  <span class="weather-icon__cloud"></span>
+                  <span class="weather-icon__rain"></span>
+                </div>
+                <div class="daily-card__temps">
+                  <span class="temp-step temp-step--low">+9</span>
+                  <span class="temp-step temp-step--high">+14</span>
+                </div>
+              </article>
+
+              <article class="daily-card daily-card--tomorrow">
+                <div>
+                  <h3 class="daily-card__date">Sat, May 16</h3>
+                  <p class="daily-card__label">Tomorrow</p>
+                </div>
+                <div class="weather-icon weather-icon--rain" aria-label="Cloudy with rain">
+                  <span class="weather-icon__cloud"></span>
+                  <span class="weather-icon__rain"></span>
+                </div>
+                <div class="daily-card__temps">
+                  <span class="temp-step temp-step--low">+9</span>
+                  <span class="temp-step temp-step--high">+12</span>
+                </div>
+              </article>
+            </div>
+
+            <section class="hourly-panel" aria-label="Hourly forecast">
+              <div class="hourly-panel__times" aria-label="Forecast times">
+                <span>2:00</span>
+                <span>5:00</span>
+                <span>8:00</span>
+                <span>11:00</span>
+                <span>14:00</span>
+                <span>17:00</span>
+                <span>20:00</span>
+                <span>23:00</span>
+              </div>
+
+              <div class="hourly-panel__icons" aria-label="Hourly weather icons">
+                <div class="mini-weather mini-weather--night-rain" aria-label="Night rain"></div>
+                <div class="mini-weather mini-weather--rain" aria-label="Rain"></div>
+                <div class="mini-weather mini-weather--cloud" aria-label="Cloudy"></div>
+                <div class="mini-weather mini-weather--partly-rain" aria-label="Partly cloudy with rain"></div>
+                <div class="mini-weather mini-weather--sun-cloud" aria-label="Partly cloudy"></div>
+                <div class="mini-weather mini-weather--sun-cloud" aria-label="Partly cloudy"></div>
+                <div class="mini-weather mini-weather--sun-cloud" aria-label="Partly cloudy"></div>
+                <div class="mini-weather mini-weather--rain" aria-label="Rain"></div>
+              </div>
+
+              <div class="metric-row">
+                <h3 class="metric-row__title">Air temperature, °C</h3>
+                <div class="temperature-band" aria-label="Air temperature by hour">
+                  <span style="--level: 1">+9</span>
+                  <span style="--level: 1">+9</span>
+                  <span style="--level: 2">+10</span>
+                  <span style="--level: 3">+11</span>
+                  <span style="--level: 5">+14</span>
+                  <span style="--level: 5">+14</span>
+                  <span style="--level: 4">+13</span>
+                  <span style="--level: 3">+11</span>
+                </div>
+              </div>
+
+              <div class="metric-row">
+                <h3 class="metric-row__title">Wind direction</h3>
+                <div class="wind-grid" aria-label="Wind direction by hour">
+                  <span><b>↘</b> NW</span>
+                  <span><b>→</b> W</span>
+                  <span><b>→</b> W</span>
+                  <span><b>→</b> W</span>
+                  <span><b>→</b> W</span>
+                  <span><b>→</b> W</span>
+                  <span><b>↖</b> SE</span>
+                  <span><b>←</b> E</span>
+                </div>
+              </div>
+
+              <div class="metric-row">
+                <h3 class="metric-row__title metric-row__title--info">Wind gusts, m/s</h3>
+                <div class="gust-grid" aria-label="Wind gusts by hour">
+                  <span>4</span>
+                  <span>3</span>
+                  <span>3</span>
+                  <span>6</span>
+                  <span>6</span>
+                  <span>6</span>
+                  <span>5</span>
+                  <span>4</span>
+                </div>
+              </div>
+
+              <div class="metric-row">
+                <h3 class="metric-row__title metric-row__title--info">Precipitation, mm</h3>
+                <div class="precip-grid" aria-label="Precipitation by hour">
+                  <span style="--rain: 72%">5.1</span>
+                  <span style="--rain: 18%">0.1</span>
+                  <span style="--rain: 4%">0</span>
+                  <span style="--rain: 20%">0.4</span>
+                  <span style="--rain: 3%">0</span>
+                  <span style="--rain: 3%">0</span>
+                  <span style="--rain: 3%">0</span>
+                  <span style="--rain: 26%">0.9</span>
+                </div>
+              </div>
+            </section>
+          </section>
+
+          <aside class="side-panel" aria-label="Advertisement area"></aside>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
