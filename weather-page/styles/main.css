@@ -407,7 +407,45 @@ button {
   border-radius: var(--radius-card);
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
-  overflow: hidden;
+  
+}
+
+.daily-card__active-line::before,
+.daily-card__active-line::after {
+  background-color: #fff;
+  background-color: var(--color-surface);
+  width: 10px;    
+  height: 10px;
+  position: absolute;
+  bottom: 0;
+}
+
+.daily-card__active-line::before {
+  content: "";
+  left: -10px;
+  -webkit-mask: radial-gradient(circle at 0 0,#0000 10px,#000 10px);
+  mask: radial-gradient(circle at 0 0,#0000 10px,#000 10px)
+}
+
+.daily-card__active-line::after {
+  content: "";
+  right: -10px;
+  -webkit-mask: radial-gradient(circle at 100% 0,#0000 10px,#000 10px);
+  mask: radial-gradient(circle at 100% 0,#0000 10px,#000 10px);
+}
+
+.daily-card__active-line {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: -20px;
+  height: 27px;
+  background: var(--color-surface);
+  display: none;
+}
+
+.daily-card--active .daily-card__active-line {
+	display: block;
 }
 
 .daily-card__date {
@@ -440,8 +478,8 @@ button {
 .temp-step {
   display: grid;
   place-items: end center;
-  min-width: 102px;
-  height: 52px;
+  min-width: 86px;
+  height: calc(30px + (var(--temp) * 2px));
   padding-bottom: 5px;
   border-bottom: 2px solid var(--color-temp-line);
   background: var(--color-temp);
@@ -450,7 +488,7 @@ button {
 }
 
 .temp-step--high {
-  height: 78px;
+  height: 46px;
 }
 
 .weather-icon {
