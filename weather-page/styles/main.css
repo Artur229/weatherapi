@@ -410,8 +410,8 @@ button {
   
 }
 
-.daily-card__active-line::before,
-.daily-card__active-line::after {
+.daily-card--active:before,
+.daily-card--active:after {
   background-color: #fff;
   background-color: var(--color-surface);
   width: 10px;    
@@ -420,16 +420,18 @@ button {
   bottom: 0;
 }
 
-.daily-card__active-line::before {
+.daily-card--active:not(:first-child):before {
   content: "";
   left: -10px;
+  bottom: -20px;
   -webkit-mask: radial-gradient(circle at 0 0,#0000 10px,#000 10px);
   mask: radial-gradient(circle at 0 0,#0000 10px,#000 10px)
 }
 
-.daily-card__active-line::after {
+.daily-card--active:not(:last-child):after {
   content: "";
   right: -10px;
+  bottom: -20px;
   -webkit-mask: radial-gradient(circle at 100% 0,#0000 10px,#000 10px);
   mask: radial-gradient(circle at 100% 0,#0000 10px,#000 10px);
 }
