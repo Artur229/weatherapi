@@ -423,7 +423,7 @@ button {
 .daily-card--active:not(:first-child):before {
   content: "";
   left: -10px;
-  bottom: -20px;
+  bottom: -18px;
   -webkit-mask: radial-gradient(circle at 0 0,#0000 10px,#000 10px);
   mask: radial-gradient(circle at 0 0,#0000 10px,#000 10px)
 }
@@ -431,7 +431,7 @@ button {
 .daily-card--active:not(:last-child):after {
   content: "";
   right: -10px;
-  bottom: -20px;
+  bottom: -18px;
   -webkit-mask: radial-gradient(circle at 100% 0,#0000 10px,#000 10px);
   mask: radial-gradient(circle at 100% 0,#0000 10px,#000 10px);
 }
@@ -475,22 +475,38 @@ button {
   bottom: 10px;
   display: flex;
   align-items: flex-end;
+  gap: 6px;
 }
 
 .temp-step {
   display: grid;
   place-items: end center;
-  min-width: 86px;
-  height: calc(30px + (var(--temp) * 2px));
-  padding-bottom: 5px;
-  border-bottom: 2px solid var(--color-temp-line);
-  background: var(--color-temp);
-  font-size: clamp(28px, 2.15vw, 38px);
+  min-width: 76px;
+  min-height: 52px;
+  padding: 8px 10px 6px;
+  border: 1px solid rgba(83, 231, 45, 0.44);
+  border-bottom: 3px solid var(--color-temp-line);
+  border-radius: 10px 10px 4px 4px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0) 42%),
+    linear-gradient(180deg, #efffe8 0%, #d7ffd0 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 5px 12px rgba(63, 205, 42, 0.08);
+  font-size: clamp(25px, 1.9vw, 34px);
+  font-weight: 600;
   line-height: 1;
 }
 
 .temp-step--high {
-  height: 46px;
+  min-height: 66px;
+}
+
+.weather-icon__image {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  display: block;
 }
 
 .weather-icon {
@@ -566,6 +582,16 @@ button {
   background: #dedede;
 }
 
+.weather-icon--sun .weather-icon__cloud,
+.weather-icon--sun .weather-icon__rain,
+.weather-icon--cloud .weather-icon__sun,
+.weather-icon--cloud .weather-icon__rain,
+.weather-icon--rain .weather-icon__sun,
+.weather-icon--snow .weather-icon__sun,
+.weather-icon--snow .weather-icon__rain {
+  display: none;
+}
+
 .weather-icon__rain {
   position: absolute;
   left: 36px;
@@ -612,59 +638,10 @@ button {
 }
 
 .mini-weather {
-  position: relative;
   width: 72px;
   height: 66px;
-}
-
-.mini-weather::before {
-  position: absolute;
-  left: 9px;
-  top: 24px;
-  width: 52px;
-  height: 26px;
-  content: "";
-  border-radius: 999px;
-  background: linear-gradient(#eeeeee, var(--color-cloud));
-  box-shadow:
-    15px -11px 0 1px #d8d8d8,
-    -8px 2px 0 0 #e2e2e2,
-    0 5px 8px rgba(120, 120, 120, 0.16);
-}
-
-.mini-weather--sun-cloud::after,
-.mini-weather--partly-rain::after {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 42px;
-  height: 42px;
-  content: "";
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, var(--color-sun) 0 39%, transparent 41%),
-    repeating-conic-gradient(from 2deg, var(--color-sun) 0 8deg, transparent 9deg 26deg);
-}
-
-.mini-weather--rain {
-  background:
-    radial-gradient(ellipse 4px 11px at 25px 57px, var(--color-rain) 98%, transparent 100%),
-    radial-gradient(ellipse 4px 11px at 45px 57px, var(--color-rain) 98%, transparent 100%);
-}
-
-.mini-weather--partly-rain {
-  background:
-    radial-gradient(ellipse 4px 11px at 25px 57px, var(--color-rain) 98%, transparent 100%),
-    radial-gradient(ellipse 4px 11px at 45px 57px, var(--color-rain) 98%, transparent 100%);
-}
-
-.mini-weather--night-rain {
-  background:
-    radial-gradient(circle at 30px 13px, #8aa1b5 0 18px, transparent 19px),
-    radial-gradient(circle at 42px 7px, var(--color-surface) 0 18px, transparent 19px),
-    radial-gradient(ellipse 4px 11px at 22px 57px, var(--color-rain) 98%, transparent 100%),
-    radial-gradient(ellipse 4px 11px at 39px 57px, var(--color-rain) 98%, transparent 100%),
-    radial-gradient(ellipse 4px 11px at 56px 57px, var(--color-rain) 98%, transparent 100%);
+  object-fit: contain;
+  display: block;
 }
 
 .metric-row {
@@ -694,20 +671,49 @@ button {
 
 .temperature-band {
   align-items: end;
-  min-height: 82px;
-  padding-inline: 0;
+  min-height: 122px;
+  padding: 0 10px;
+  column-gap: 0;
 }
 
 .temperature-band span {
   position: relative;
-  display: grid;
-  place-items: end center;
-  min-height: calc(42px + (var(--level) * 6px));
-  padding-bottom: 9px;
-  border-bottom: 2px solid var(--color-temp-line);
-  background: var(--color-temp);
+  display: block;
+  min-height: 112px;
+  padding-top: 0;
+  --bar-height: calc(32px + (var(--level) * 5px));
+  color: transparent;
   font-size: clamp(21px, 1.75vw, 31px);
-  font-weight: 500;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  isolation: isolate;
+}
+
+.temperature-band span::after {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--bar-height) + 7px);
+  content: attr(data-temp);
+  color: #5d6760;
+  transition: bottom 180ms ease;
+}
+
+.temperature-band span::before {
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  bottom: 0;
+  z-index: -1;
+  height: var(--bar-height);
+  content: "";
+  border-top: 4px solid var(--color-temp-line);
+  border-radius: 14px 14px 0 0;
+  background:
+    linear-gradient(180deg, rgba(119, 243, 79, 0.28), rgba(221, 255, 208, 0.92) 54%, rgba(221, 255, 208, 0.72) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  transition: height 180ms ease;
 }
 
 .wind-grid {

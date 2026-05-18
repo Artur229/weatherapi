@@ -1,4 +1,14 @@
 let days = [];
+let activeIndex = 1;
+
+const cards = document.querySelectorAll('.daily-card');
+
+const hourTimes = document.querySelectorAll('.hour-time');
+const hourTemps = document.querySelectorAll('.hour-temp');
+const hourIcons = document.querySelectorAll('.hourly-panel__icons .mini-weather');
+const hourWinds = document.querySelectorAll('.hour-wind');
+const hourGusts = document.querySelectorAll('.hour-gust');
+const hourPrecipitations = document.querySelectorAll('.hour-precip');
 
 function formatDay(dateString) {
 	const date = new Date(dateString);
@@ -18,58 +28,106 @@ function getDayLabel(index) {
 	return '';
 }
 
+function getWeatherIconSrc(code) {
+	if (code === 0) return 'assets/img/icon/sun.png';
+	if (code === 1) return 'assets/img/icon/partly-cloudy.png';
+	if (code === 2) return 'assets/img/icon/partly-cloudy.png';
+	if (code === 3) return 'assets/img/icon/cloudy.png';
+	if ([51, 53, 55, 61, 63, 65].includes(code)) {
+		return 'assets/img/icon/rain.png';
+	}
+	if ([71, 73, 75].includes(code)) {
+		return 'assets/img/icon/snow.png';
+	}
+
+	return 'assets/img/icon/cloudy.png';
+}
+
+function formatHour(timeString) {
+	const date = new Date(timeString);
+	return date.getHours() + ':00';
+}
+
+function formatTemp(value) {
+	const rounded = Math.round(value);
+	return rounded > 0 ? `+${rounded}` : String(rounded);
+}
+
+function getWindDirection(degrees) {
+	if (degrees >= 337.5 || degrees < 22.5) return 'N';
+	if (degrees >= 22.5 && degrees < 67.5) return 'NE';
+	if (degrees >= 67.5 && degrees < 112.5) return 'E';
+	if (degrees >= 112.5 && degrees < 157.5) return 'SE';
+	if (degrees >= 157.5 && degrees < 202.5) return 'S';
+	if (degrees >= 202.5 && degrees < 247.5) return 'SW';
+	if (degrees >= 247.5 && degrees < 292.5) return 'W';
+	return 'NW';
+}
+
+function getWindArrow(degrees) {
+	if (degrees >= 337.5 || degrees < 22.5) return '↓';
+	if (degrees >= 22.5 && degrees < 67.5) return '↙';
+	if (degrees >= 67.5 && degrees < 112.5) return '←';
+	if (degrees >= 112.5 && degrees < 157.5) return '↖';
+	if (degrees >= 157.5 && degrees < 202.5) return '↑';
+	if (degrees >= 202.5 && degrees < 247.5) return '↗';
+	if (degrees >= 247.5 && degrees < 292.5) return '→';
+	return '↘';
+}
+
+function getLevel(temp, min, max) {
+	if (max === min) return 5;
+	return Math.max(1, Math.round(((temp - min) / (max - min)) * 10));
+}
+
+function getRainHeight(precipitation) {
+	return `${Math.min(84, Math.max(3, precipitation * 18))}%`;
+}
+
 async function loadWeather() {
-	const response = await fetch(
-		'https://api.open-meteo.com/v1/forecast?latitude=48.2082&longitude=16.3738&past_days=1&forecast_days=7&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation,wind_speed_10m,wind_direction_10m&timezone=auto'
-	);
+	try {
+		const response = await fetch(
+			'https://api.open-meteo.com/v1/forecast?latitude=48.2082&longitude=16.3738&past_days=1&forecast_days=7&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=auto'
+		);
 
-	const data = await response.json();
+		if (!response.ok) {
+			throw new Error('Weather request failed');
+		}
 
-	days = data.daily.time.map((date, index) => {
-	const hoursForThisDay = data.hourly.time
-		.map((time, hourIndex) => {
+		const data = await response.json();
+
+		days = data.daily.time.map((date, index) => {
+			const hoursForThisDay = data.hourly.time
+				.map((time, hourIndex) => {
+					return {
+						time,
+						temp: data.hourly.temperature_2m[hourIndex],
+						code: data.hourly.weather_code[hourIndex],
+						precipitation: data.hourly.precipitation[hourIndex],
+						windSpeed: data.hourly.wind_speed_10m[hourIndex],
+						windDirection: data.hourly.wind_direction_10m[hourIndex],
+						windGust: data.hourly.wind_gusts_10m[hourIndex],
+					};
+				})
+				.filter((hour) => hour.time.startsWith(date));
+
 			return {
-				time,
-				temp: data.hourly.temperature_2m[hourIndex],
-				code: data.hourly.weather_code[hourIndex],
-				precipitation: data.hourly.precipitation[hourIndex],
-				windSpeed: data.hourly.wind_speed_10m[hourIndex],
-				windDirection: data.hourly.wind_direction_10m[hourIndex],
+				date,
+				day: formatDay(date),
+				label: getDayLabel(index),
+				min: Math.round(data.daily.temperature_2m_min[index]),
+				max: Math.round(data.daily.temperature_2m_max[index]),
+				code: data.daily.weather_code[index],
+				hours: hoursForThisDay,
 			};
-		})
-		.filter((hour) => hour.time.startsWith(date));
+		});
 
-	return {
-		date,
-		day: formatDay(date),
-		label: getDayLabel(index),
-		min: Math.round(data.daily.temperature_2m_min[index]),
-		max: Math.round(data.daily.temperature_2m_max[index]),
-		code: data.daily.weather_code[index],
-		hours: hoursForThisDay,
-	 };
-  });
-
-	activeIndex = 1;
-	renderCards();
+		activeIndex = 1;
+		renderCards();
+	} catch (error) {
+		console.error(error);
+	}
 }
-
-function renderHourly(day) {
-	console.log(day.hours);
-}
-
-function getWeatherIconClass(code) {
-	if (code === 0) return 'weather-icon--sun';
-	if ([1, 2, 3].includes(code)) return 'weather-icon--partly-rain';
-	if ([51, 53, 55, 61, 63, 65].includes(code)) return 'weather-icon--rain';
-	if ([71, 73, 75].includes(code)) return 'weather-icon--snow';
-
-	return 'weather-icon--cloud';
-}
-
-let activeIndex = 1;
-
-const cards = document.querySelectorAll('.daily-card');
 
 function renderCards() {
 	const visibleDays = [
@@ -83,14 +141,46 @@ function renderCards() {
 
 		card.querySelector('.daily-card__date').textContent = day.day;
 		card.querySelector('.daily-card__label').textContent = day.label;
-		card.querySelector('.temp-step--low').textContent = day.min;
-		card.querySelector('.temp-step--high').textContent = day.max;
+		card.querySelector('.temp-step--low').textContent = formatTemp(day.min);
+		card.querySelector('.temp-step--high').textContent = formatTemp(day.max);
 
-        const icon = card.querySelector('.weather-icon');
-	    icon.className = 'weather-icon ' + getWeatherIconClass(day.code);
-
+		const icon = card.querySelector('.weather-icon__image');
+		icon.src = getWeatherIconSrc(day.code);
 
 		card.classList.toggle('daily-card--active', index === 1);
+	});
+
+	renderHourly(days[activeIndex]);
+}
+
+function renderHourly(day) {
+	const selectedHours = day.hours.filter((hour) => {
+		const hourNumber = new Date(hour.time).getHours();
+
+		return [2, 5, 8, 11, 14, 17, 20, 23].includes(hourNumber);
+	});
+
+	const temperatures = selectedHours.map((hour) => hour.temp);
+	const minTemp = Math.min(...temperatures);
+	const maxTemp = Math.max(...temperatures);
+
+	selectedHours.forEach((hour, index) => {
+		if (!hourTimes[index] || !hourTemps[index] || !hourWinds[index] || !hourGusts[index] || !hourPrecipitations[index] || !hourIcons[index]) {
+			return;
+		}
+
+		hourTimes[index].textContent = formatHour(hour.time);
+		hourTemps[index].textContent = formatTemp(hour.temp);
+		hourTemps[index].dataset.temp = formatTemp(hour.temp);
+		hourTemps[index].style.setProperty('--level', getLevel(hour.temp, minTemp, maxTemp));
+
+		hourWinds[index].innerHTML = `<b>${getWindArrow(hour.windDirection)}</b> ${getWindDirection(hour.windDirection)}`;
+		hourGusts[index].textContent = Math.round(hour.windGust ?? hour.windSpeed);
+
+		hourPrecipitations[index].textContent = hour.precipitation;
+		hourPrecipitations[index].style.setProperty('--rain', getRainHeight(hour.precipitation));
+
+		hourIcons[index].src = getWeatherIconSrc(hour.code);
 	});
 }
 
@@ -104,12 +194,12 @@ cards.forEach((card, index) => {
 			index === 2 && activeIndex === days.length - 2;
 
 		if (isFirstDay || isLastDay) {
-
 			cards.forEach(c =>
 				c.classList.remove('daily-card--active')
 			);
 
 			card.classList.add('daily-card--active');
+			renderHourly(days[activeIndex + index - 1]);
 
 			return;
 		}
@@ -123,12 +213,7 @@ cards.forEach((card, index) => {
 		}
 
 		renderCards();
-        renderHourly(days[activeIndex]);
-
 	});
-    
 });
-
-
 
 loadWeather();

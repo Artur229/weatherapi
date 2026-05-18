@@ -78,10 +78,8 @@
                   <h3 class="daily-card__date"></h3>
                   <p class="daily-card__label">Yesterday</p>
                 </div>
-                <div class="weather-icon weather-icon--partly-rain" aria-label="Partly cloudy with rain">
-                  <span class="weather-icon__sun"></span>
-                  <span class="weather-icon__cloud"></span>
-                  <span class="weather-icon__rain"></span>
+                <div class="weather-icon">
+                  <img class="weather-icon__image" src="assets/img/icon/partly-cloudy.png" alt="" />
                 </div>
                 <div class="daily-card__temps">
                   <span class="temp-step temp-step--low"></span>
@@ -95,10 +93,8 @@
                   <h3 class="daily-card__date"></h3>
                   <p class="daily-card__label">Today</p>
                 </div>
-                <div class="weather-icon weather-icon--partly-rain" aria-label="Partly cloudy with showers">
-                  <span class="weather-icon__sun"></span>
-                  <span class="weather-icon__cloud"></span>
-                  <span class="weather-icon__rain"></span>
+                <div class="weather-icon">
+                  <img class="weather-icon__image" src="assets/img/icon/partly-cloudy.png" alt="" />
                 </div>
                 <div class="daily-card__temps">
                   <span class="temp-step temp-step--low"></span>
@@ -112,9 +108,8 @@
                   <h3 class="daily-card__date"></h3>
                   <p class="daily-card__label">Tomorrow</p>
                 </div>
-                <div class="weather-icon weather-icon--rain" aria-label="Cloudy with rain">
-                  <span class="weather-icon__cloud"></span>
-                  <span class="weather-icon__rain"></span>
+                <div class="weather-icon">
+                  <img class="weather-icon__image" src="assets/img/icon/cloudy.png" alt="" />
                 </div>
                 <div class="daily-card__temps">
                   <span class="temp-step temp-step--low"></span>
@@ -126,80 +121,80 @@
 
             <section class="hourly-panel" aria-label="Hourly forecast">
               <div class="hourly-panel__times" aria-label="Forecast times">
-                <span>2:00</span>
-                <span>5:00</span>
-                <span>8:00</span>
-                <span>11:00</span>
-                <span>14:00</span>
-                <span>17:00</span>
-                <span>20:00</span>
-                <span>23:00</span>
+                <span class="hour-time">2:00</span>
+                <span class="hour-time">5:00</span>
+                <span class="hour-time">8:00</span>
+                <span class="hour-time">11:00</span>
+                <span class="hour-time">14:00</span>
+                <span class="hour-time">17:00</span>
+                <span class="hour-time">20:00</span>
+                <span class="hour-time">23:00</span>
               </div>
 
               <div class="hourly-panel__icons" aria-label="Hourly weather icons">
-                <div class="mini-weather mini-weather--night-rain" aria-label="Night rain"></div>
-                <div class="mini-weather mini-weather--rain" aria-label="Rain"></div>
-                <div class="mini-weather mini-weather--cloud" aria-label="Cloudy"></div>
-                <div class="mini-weather mini-weather--partly-rain" aria-label="Partly cloudy with rain"></div>
-                <div class="mini-weather mini-weather--sun-cloud" aria-label="Partly cloudy"></div>
-                <div class="mini-weather mini-weather--sun-cloud" aria-label="Partly cloudy"></div>
-                <div class="mini-weather mini-weather--sun-cloud" aria-label="Partly cloudy"></div>
-                <div class="mini-weather mini-weather--rain" aria-label="Rain"></div>
+                <img class="mini-weather" src="assets/img/icon/rain.png" alt="" />
+                <img class="mini-weather" src="assets/img/icon/rain.png" alt="" />
+                <img class="mini-weather" src="assets/img/icon/cloudy.png" alt="" />
+                <img class="mini-weather" src="assets/img/icon/partly-cloudy.png" alt="" />
+                <img class="mini-weather" src="assets/img/icon/partly-cloudy.png" alt="" />
+                <img class="mini-weather" src="assets/img/icon/partly-cloudy.png" alt="" />
+                <img class="mini-weather" src="assets/img/icon/partly-cloudy.png" alt="" />
+                <img class="mini-weather" src="assets/img/icon/rain.png" alt="" />
               </div>
 
               <div class="metric-row">
                 <h3 class="metric-row__title">Air temperature, °C</h3>
                 <div class="temperature-band" aria-label="Air temperature by hour">
-                  <span style="--level: 1">+9</span>
-                  <span style="--level: 1">+9</span>
-                  <span style="--level: 2">+10</span>
-                  <span style="--level: 3">+11</span>
-                  <span style="--level: 5">+14</span>
-                  <span style="--level: 5">+14</span>
-                  <span style="--level: 4">+13</span>
-                  <span style="--level: 3">+11</span>
+                  <span class="hour-temp" style="--level: 1" data-temp="+9">+9</span>
+                  <span class="hour-temp" style="--level: 1" data-temp="+9">+9</span>
+                  <span class="hour-temp" style="--level: 2" data-temp="+10">+10</span>
+                  <span class="hour-temp" style="--level: 3" data-temp="+11">+11</span>
+                  <span class="hour-temp" style="--level: 5" data-temp="+14">+14</span>
+                  <span class="hour-temp" style="--level: 5" data-temp="+14">+14</span>
+                  <span class="hour-temp" style="--level: 4" data-temp="+13">+13</span>
+                  <span class="hour-temp" style="--level: 3" data-temp="+11">+11</span>
                 </div>
               </div>
 
               <div class="metric-row">
                 <h3 class="metric-row__title">Wind direction</h3>
                 <div class="wind-grid" aria-label="Wind direction by hour">
-                  <span><b>↘</b> NW</span>
-                  <span><b>→</b> W</span>
-                  <span><b>→</b> W</span>
-                  <span><b>→</b> W</span>
-                  <span><b>→</b> W</span>
-                  <span><b>→</b> W</span>
-                  <span><b>↖</b> SE</span>
-                  <span><b>←</b> E</span>
+                  <span class="hour-wind"><b>↘</b> NW</span>
+                  <span class="hour-wind"><b>→</b> W</span>
+                  <span class="hour-wind"><b>→</b> W</span>
+                  <span class="hour-wind"><b>→</b> W</span>
+                  <span class="hour-wind"><b>→</b> W</span>
+                  <span class="hour-wind"><b>→</b> W</span>
+                  <span class="hour-wind"><b>↖</b> SE</span>
+                  <span class="hour-wind"><b>←</b> E</span>
                 </div>
               </div>
 
               <div class="metric-row">
                 <h3 class="metric-row__title metric-row__title--info">Wind gusts, m/s</h3>
                 <div class="gust-grid" aria-label="Wind gusts by hour">
-                  <span>4</span>
-                  <span>3</span>
-                  <span>3</span>
-                  <span>6</span>
-                  <span>6</span>
-                  <span>6</span>
-                  <span>5</span>
-                  <span>4</span>
+                  <span class="hour-gust">4</span>
+                  <span class="hour-gust">3</span>
+                  <span class="hour-gust">3</span>
+                  <span class="hour-gust">6</span>
+                  <span class="hour-gust">6</span>
+                  <span class="hour-gust">6</span>
+                  <span class="hour-gust">5</span>
+                  <span class="hour-gust">4</span>
                 </div>
               </div>
 
               <div class="metric-row">
                 <h3 class="metric-row__title metric-row__title--info">Precipitation, mm</h3>
                 <div class="precip-grid" aria-label="Precipitation by hour">
-                  <span style="--rain: 72%">5.1</span>
-                  <span style="--rain: 18%">0.1</span>
-                  <span style="--rain: 4%">0</span>
-                  <span style="--rain: 20%">0.4</span>
-                  <span style="--rain: 3%">0</span>
-                  <span style="--rain: 3%">0</span>
-                  <span style="--rain: 3%">0</span>
-                  <span style="--rain: 26%">0.9</span>
+                  <span style="--rain: 72%" class="hour-precip">5.1</span>
+                  <span style="--rain: 18%" class="hour-precip">0.1</span>
+                  <span style="--rain: 4%" class="hour-precip">0</span>
+                  <span style="--rain: 20%" class="hour-precip">0.4</span>
+                  <span style="--rain: 3%" class="hour-precip">0</span>
+                  <span style="--rain: 3%" class="hour-precip">0</span>
+                  <span style="--rain: 3%" class="hour-precip">0</span>
+                  <span style="--rain: 26%" class="hour-precip">0.9</span>
                 </div>
               </div>
             </section>
