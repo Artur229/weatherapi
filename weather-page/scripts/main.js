@@ -11,6 +11,8 @@ let currentUnit = 'celsius';
 let suggestionTimer = null;
 let latestSuggestions = [];
 let suggestionRequestId = 0;
+let weatherMap = null;
+let weatherMarker = null;
 
 const cards = document.querySelectorAll('.daily-card');
 const searchForm = document.querySelector('.site-header__search');
@@ -26,6 +28,7 @@ const heroMeta = document.querySelector('.weather-hero__meta');
 const heroTitle = document.querySelector('.weather-hero__title');
 const sectionTitle = document.querySelector('#today-heading');
 const temperatureTitle = document.querySelector('.metric-row__title');
+const mapStatus = document.querySelector('.weather-map__status');
 
 const hourTimes = document.querySelectorAll('.hour-time');
 const hourTemps = document.querySelectorAll('.hour-temp');
@@ -167,6 +170,10 @@ function getLocationLabel(location) {
 		.join(' / ');
 }
 
+function formatCoordinates(location) {
+	return `${location.latitude.toFixed(2)}, ${location.longitude.toFixed(2)}`;
+}
+
 function getSuggestionLabel(location) {
 	return [location.name, location.admin1 || location.admin2, location.country]
 		.filter(Boolean)
@@ -246,6 +253,60 @@ function setSearchStatus(message, isError = false) {
 function setLoading(isLoading) {
 	searchInput.disabled = isLoading;
 	searchForm.classList.toggle('site-header__search--loading', isLoading);
+}
+
+function updateMapSelection(location, shouldPan = true) {
+	if (!weatherMap || !weatherMarker) {
+		return;
+	}
+
+	const position = [location.latitude, location.longitude];
+	weatherMarker.setLatLng(position);
+
+	if (shouldPan) {
+		weatherMap.setView(position, Math.max(weatherMap.getZoom(), 8));
+	}
+
+	mapStatus.textContent = location.name === 'Map point'
+		? `${formatCoordinates(location)} selected`
+		: `${location.name} selected`;
+}
+
+function initMap() {
+	if (!window.L) {
+		mapStatus.textContent = 'Map unavailable';
+		return;
+	}
+
+	const startPosition = [currentLocation.latitude, currentLocation.longitude];
+
+	weatherMap = L.map('weather-map', {
+		zoomControl: true,
+		scrollWheelZoom: false,
+	}).setView(startPosition, 7);
+
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; OpenStreetMap contributors',
+	}).addTo(weatherMap);
+
+	weatherMarker = L.marker(startPosition).addTo(weatherMap);
+
+	weatherMap.on('click', (event) => {
+		const location = {
+			name: 'Map point',
+			country: '',
+			admin1: formatCoordinates({
+				latitude: event.latlng.lat,
+				longitude: event.latlng.lng,
+			}),
+			latitude: event.latlng.lat,
+			longitude: event.latlng.lng,
+		};
+
+		updateMapSelection(location, false);
+		loadWeather(location);
+	});
 }
 
 function hideSuggestions(shouldClear = false) {
@@ -332,6 +393,9 @@ function updatePageHeader(data) {
 	sectionTitle.textContent = `Weather in ${currentLocation.name} today`;
 	temperatureTitle.textContent = `Air temperature, ${getUnitSymbol()}`;
 	unitsLabel.textContent = getUnitSymbol();
+	mapStatus.textContent = currentLocation.name === 'Map point'
+		? `${formatCoordinates(currentLocation)} selected`
+		: `${currentLocation.name} selected`;
 	updateHeroMood(currentCode);
 	document.title = `Weather in ${currentLocation.name}`;
 }
@@ -381,6 +445,7 @@ async function loadWeather(location = currentLocation) {
 		currentLocation = location;
 		searchInput.value = currentLocation.name;
 		hideSuggestions();
+		updateMapSelection(currentLocation);
 		updatePageHeader(data);
 		renderCards();
 		setSearchStatus('');
@@ -575,4 +640,5 @@ cards.forEach((card, index) => {
 	});
 });
 
+initMap();
 loadWeather();

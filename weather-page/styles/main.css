@@ -429,6 +429,53 @@ button {
   text-shadow: 0 2px 22px rgba(0, 0, 0, 0.18);
 }
 
+.weather-map {
+  margin-top: 24px;
+  overflow: hidden;
+  border-radius: var(--radius-large);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.weather-map__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 64px;
+  padding: 14px 18px;
+}
+
+.weather-map__title {
+  margin: 0;
+  font-size: clamp(24px, 1.9vw, 34px);
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.weather-map__status {
+  margin: 0;
+  color: #6d7178;
+  font-size: clamp(16px, 1.2vw, 21px);
+  font-weight: 700;
+  text-align: right;
+}
+
+.weather-map__canvas {
+  width: 100%;
+  height: clamp(320px, 38vw, 520px);
+  background: #d8e4ea;
+}
+
+.weather-map .leaflet-container {
+  color: #202226;
+  font-family: var(--font-body);
+}
+
+.weather-map .leaflet-control-attribution {
+  font-size: 11px;
+}
+
 .weather-hero--sunny {
   background:
     radial-gradient(circle at 80% 23%, #fff7a8 0 5%, #ffd85c 6% 9%, transparent 10%),

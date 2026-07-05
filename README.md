@@ -6,6 +6,7 @@ Simple weather forecast page built with HTML, CSS, and JavaScript.
 
 - Search for a city and switch the forecast location.
 - Get city suggestions while typing.
+- Pick any point on the map to load its forecast.
 - Switch between Celsius and Fahrenheit.
 - Show an animated weather banner that changes for sun, rain, snow, fog, and storms.
 - Shows daily cards for yesterday, today, and tomorrow.
