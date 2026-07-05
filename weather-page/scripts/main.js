@@ -21,8 +21,7 @@ const unitsWrap = document.querySelector('.site-header__units-wrap');
 const unitsButton = document.querySelector('.site-header__units');
 const unitsLabel = document.querySelector('.site-header__units-label');
 const unitOptions = document.querySelectorAll('.site-header__units-menu button');
-const bubble = document.querySelector('.weather-hero__bubble');
-const bubbleClose = document.querySelector('.weather-hero__bubble-close');
+const hero = document.querySelector('.weather-hero');
 const heroMeta = document.querySelector('.weather-hero__meta');
 const heroTitle = document.querySelector('.weather-hero__title');
 const sectionTitle = document.querySelector('#today-heading');
@@ -64,6 +63,28 @@ function getWeatherDescription(code) {
 	if ([95, 96, 99].includes(code)) return 'Stormy';
 
 	return 'Weather';
+}
+
+function getWeatherMood(code) {
+	if (code === 0) return 'sunny';
+	if ([45, 48].includes(code)) return 'foggy';
+	if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return 'rainy';
+	if ([71, 73, 75, 77, 85, 86].includes(code)) return 'snowy';
+	if ([95, 96, 99].includes(code)) return 'stormy';
+
+	return 'cloudy';
+}
+
+function updateHeroMood(code) {
+	hero.classList.remove(
+		'weather-hero--sunny',
+		'weather-hero--cloudy',
+		'weather-hero--rainy',
+		'weather-hero--snowy',
+		'weather-hero--foggy',
+		'weather-hero--stormy'
+	);
+	hero.classList.add(`weather-hero--${getWeatherMood(code)}`);
 }
 
 function getWeatherIconSrc(code) {
@@ -311,6 +332,7 @@ function updatePageHeader(data) {
 	sectionTitle.textContent = `Weather in ${currentLocation.name} today`;
 	temperatureTitle.textContent = `Air temperature, ${getUnitSymbol()}`;
 	unitsLabel.textContent = getUnitSymbol();
+	updateHeroMood(currentCode);
 	document.title = `Weather in ${currentLocation.name}`;
 }
 
@@ -483,10 +505,6 @@ searchForm.addEventListener('submit', async (event) => {
 		setSearchStatus(error.message === 'Location not found' ? 'Location not found' : 'Could not find this location', true);
 		setLoading(false);
 	}
-});
-
-bubbleClose.addEventListener('click', () => {
-	bubble.hidden = true;
 });
 
 unitsButton.addEventListener('click', () => {
