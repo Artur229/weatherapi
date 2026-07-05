@@ -177,6 +177,31 @@ button {
   outline-color: rgba(0, 127, 189, 0.35);
 }
 
+.site-header__search-input:disabled {
+  color: #8a8d92;
+  cursor: wait;
+}
+
+.site-header__search-status {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 6px);
+  width: 100%;
+  margin: 0;
+  color: #53565c;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.site-header__search-status--error {
+  color: #c62616;
+}
+
+.site-header__search--loading .site-header__search-icon {
+  animation: search-pulse 900ms ease-in-out infinite alternate;
+}
+
 .site-header__units {
   justify-self: end;
   display: inline-flex;
@@ -195,6 +220,16 @@ button {
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
   transform: rotate(45deg) translateY(-2px);
+}
+
+@keyframes search-pulse {
+  from {
+    opacity: 0.42;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .weather-hero {

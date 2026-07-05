@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Weather in Vienna Today</title>
+    <title>Weather Forecast</title>
     <link rel="stylesheet" href="styles/main.css" />
   </head>
   <body>
@@ -20,9 +20,11 @@
             class="site-header__search-input"
             id="location-search"
             type="search"
-            value=""
-            placeholder="Search location"
+            value="Vienna"
+            placeholder="Search city"
+            autocomplete="off"
           />
+          <p class="site-header__search-status" aria-live="polite"></p>
         </form>
 
         <button class="site-header__units" type="button" aria-label="Change units and region">
@@ -41,10 +43,10 @@
 
           <div class="weather-hero__content">
             <p class="weather-hero__meta">
-              Fri, May 15, 19:47
-              <span>Austria / Vienna Land</span>
+              Loading weather
+              <span>Austria / Vienna</span>
             </p>
-            <h1 class="weather-hero__title">Partly cloudy in Vienna, +13°C</h1>
+            <h1 class="weather-hero__title">Weather forecast</h1>
           </div>
 
           <aside class="weather-hero__bubble" aria-label="Weather informer promotion">
@@ -70,7 +72,7 @@
 
         <div class="content-grid">
           <section class="forecast-main" aria-labelledby="today-heading">
-            <h2 class="section-title" id="today-heading">Weather in Vienna today</h2>
+            <h2 class="section-title" id="today-heading">Weather today</h2>
 
             <div class="daily-grid" aria-label="Daily forecast">
               <article class="daily-card">

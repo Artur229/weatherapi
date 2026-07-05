@@ -1,7 +1,20 @@
 let days = [];
 let activeIndex = 1;
+let currentLocation = {
+	name: 'Vienna',
+	country: 'Austria',
+	admin1: 'Vienna',
+	latitude: 48.2082,
+	longitude: 16.3738,
+};
 
 const cards = document.querySelectorAll('.daily-card');
+const searchForm = document.querySelector('.site-header__search');
+const searchInput = document.querySelector('#location-search');
+const searchStatus = document.querySelector('.site-header__search-status');
+const heroMeta = document.querySelector('.weather-hero__meta');
+const heroTitle = document.querySelector('.weather-hero__title');
+const sectionTitle = document.querySelector('#today-heading');
 
 const hourTimes = document.querySelectorAll('.hour-time');
 const hourTemps = document.querySelectorAll('.hour-temp');
@@ -28,6 +41,19 @@ function getDayLabel(index) {
 	return '';
 }
 
+function getWeatherDescription(code) {
+	if (code === 0) return 'Clear sky';
+	if ([1, 2].includes(code)) return 'Partly cloudy';
+	if (code === 3) return 'Cloudy';
+	if ([45, 48].includes(code)) return 'Foggy';
+	if ([51, 53, 55, 56, 57].includes(code)) return 'Drizzle';
+	if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return 'Rainy';
+	if ([71, 73, 75, 77, 85, 86].includes(code)) return 'Snowy';
+	if ([95, 96, 99].includes(code)) return 'Stormy';
+
+	return 'Weather';
+}
+
 function getWeatherIconSrc(code) {
 	if (code === 0) return 'assets/img/icon/sun.png';
 	if (code === 1) return 'assets/img/icon/partly-cloudy.png';
@@ -41,6 +67,16 @@ function getWeatherIconSrc(code) {
 	}
 
 	return 'assets/img/icon/cloudy.png';
+}
+
+function formatDateTime(date) {
+	return date.toLocaleDateString('en-US', {
+		weekday: 'short',
+		month: 'short',
+		day: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+	});
 }
 
 function formatHour(timeString) {
@@ -84,10 +120,62 @@ function getRainHeight(precipitation) {
 	return `${Math.min(84, Math.max(3, precipitation * 18))}%`;
 }
 
-async function loadWeather() {
+function getLocationLabel(location) {
+	return [location.country, location.admin1 || location.name]
+		.filter(Boolean)
+		.join(' / ');
+}
+
+function setSearchStatus(message, isError = false) {
+	searchStatus.textContent = message;
+	searchStatus.classList.toggle('site-header__search-status--error', isError);
+}
+
+function setLoading(isLoading) {
+	searchInput.disabled = isLoading;
+	searchForm.classList.toggle('site-header__search--loading', isLoading);
+}
+
+async function findLocation(query) {
+	const response = await fetch(
+		`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`
+	);
+
+	if (!response.ok) {
+		throw new Error('Location request failed');
+	}
+
+	const data = await response.json();
+
+	if (!data.results || data.results.length === 0) {
+		throw new Error('Location not found');
+	}
+
+	return data.results[0];
+}
+
+function updatePageHeader(data) {
+	const currentTemp = data.current ? formatTemp(data.current.temperature_2m) : formatTemp(days[activeIndex].max);
+	const currentCode = data.current ? data.current.weather_code : days[activeIndex].code;
+	const description = getWeatherDescription(currentCode);
+	const locationLabel = getLocationLabel(currentLocation);
+	const locationMeta = document.createElement('span');
+
+	locationMeta.textContent = locationLabel;
+	heroMeta.textContent = formatDateTime(new Date());
+	heroMeta.append(locationMeta);
+	heroTitle.textContent = `${description} in ${currentLocation.name}, ${currentTemp}°C`;
+	sectionTitle.textContent = `Weather in ${currentLocation.name} today`;
+	document.title = `Weather in ${currentLocation.name}`;
+}
+
+async function loadWeather(location = currentLocation) {
 	try {
+		setLoading(true);
+		setSearchStatus('Loading forecast...');
+
 		const response = await fetch(
-			'https://api.open-meteo.com/v1/forecast?latitude=48.2082&longitude=16.3738&past_days=1&forecast_days=7&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=auto'
+			`https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&past_days=1&forecast_days=7&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=auto`
 		);
 
 		if (!response.ok) {
@@ -123,9 +211,16 @@ async function loadWeather() {
 		});
 
 		activeIndex = 1;
+		currentLocation = location;
+		searchInput.value = currentLocation.name;
+		updatePageHeader(data);
 		renderCards();
+		setSearchStatus('');
 	} catch (error) {
 		console.error(error);
+		setSearchStatus(error.message === 'Location not found' ? 'Location not found' : 'Could not load weather', true);
+	} finally {
+		setLoading(false);
 	}
 }
 
@@ -183,6 +278,28 @@ function renderHourly(day) {
 		hourIcons[index].src = getWeatherIconSrc(hour.code);
 	});
 }
+
+searchForm.addEventListener('submit', async (event) => {
+	event.preventDefault();
+
+	const query = searchInput.value.trim();
+
+	if (!query) {
+		setSearchStatus('Enter a city name', true);
+		return;
+	}
+
+	try {
+		setLoading(true);
+		setSearchStatus('Searching...');
+		const location = await findLocation(query);
+		await loadWeather(location);
+	} catch (error) {
+		console.error(error);
+		setSearchStatus(error.message === 'Location not found' ? 'Location not found' : 'Could not find this location', true);
+		setLoading(false);
+	}
+});
 
 cards.forEach((card, index) => {
 	card.addEventListener('click', () => {
