@@ -10,6 +10,7 @@ let currentLocation = {
 let currentUnit = 'celsius';
 let suggestionTimer = null;
 let latestSuggestions = [];
+let suggestionRequestId = 0;
 
 const cards = document.querySelectorAll('.daily-card');
 const searchForm = document.querySelector('.site-header__search');
@@ -151,6 +152,71 @@ function getSuggestionLabel(location) {
 		.join(', ');
 }
 
+function hasCyrillic(text) {
+	return /[А-Яа-яЁёІіЇїЄєҐґ]/.test(text);
+}
+
+function transliterateUkrainian(text) {
+	const singleLetters = {
+		а: 'a',
+		б: 'b',
+		в: 'v',
+		г: 'h',
+		ґ: 'g',
+		д: 'd',
+		е: 'e',
+		ж: 'zh',
+		з: 'z',
+		и: 'y',
+		і: 'i',
+		ї: 'i',
+		й: 'y',
+		к: 'k',
+		л: 'l',
+		м: 'm',
+		н: 'n',
+		о: 'o',
+		п: 'p',
+		р: 'r',
+		с: 's',
+		т: 't',
+		у: 'u',
+		ф: 'f',
+		х: 'kh',
+		ц: 'ts',
+		ч: 'ch',
+		ш: 'sh',
+		щ: 'shch',
+		ь: '',
+		ю: 'iu',
+		я: 'ia',
+	};
+
+	return text
+		.toLowerCase()
+		.split('')
+		.map((letter, index) => {
+			if (letter === 'є') return index === 0 ? 'ye' : 'ie';
+			if (letter === 'ю') return index === 0 ? 'yu' : 'iu';
+			if (letter === 'я') return index === 0 ? 'ya' : 'ia';
+			if (letter === 'ї') return index === 0 ? 'yi' : 'i';
+			return singleLetters[letter] ?? letter;
+		})
+		.join('')
+		.replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function getSearchQueries(query) {
+	const queries = [query];
+	const transliterated = hasCyrillic(query) ? transliterateUkrainian(query) : '';
+
+	if (transliterated && transliterated.toLowerCase() !== query.toLowerCase()) {
+		queries.push(transliterated);
+	}
+
+	return queries;
+}
+
 function setSearchStatus(message, isError = false) {
 	searchStatus.textContent = message;
 	searchStatus.classList.toggle('site-header__search-status--error', isError);
@@ -161,9 +227,13 @@ function setLoading(isLoading) {
 	searchForm.classList.toggle('site-header__search--loading', isLoading);
 }
 
-function hideSuggestions() {
+function hideSuggestions(shouldClear = false) {
 	suggestionsList.classList.remove('site-header__suggestions--open');
 	suggestionsList.innerHTML = '';
+
+	if (shouldClear) {
+		latestSuggestions = [];
+	}
 }
 
 function renderSuggestions(locations) {
@@ -182,7 +252,7 @@ function renderSuggestions(locations) {
 		button.type = 'button';
 		button.textContent = getSuggestionLabel(location);
 		button.addEventListener('click', () => {
-			hideSuggestions();
+			hideSuggestions(true);
 			loadWeather(location);
 		});
 
@@ -194,21 +264,32 @@ function renderSuggestions(locations) {
 }
 
 async function searchLocations(query, count = 5) {
-	const response = await fetch(
-		`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=${count}&language=en&format=json`
+	const responses = await Promise.all(
+		getSearchQueries(query).map(async (searchQuery) => {
+			const response = await fetch(
+				`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchQuery)}&count=${count}&language=en&format=json`
+			);
+
+			if (!response.ok) {
+				throw new Error('Location request failed');
+			}
+
+			return response.json();
+		})
 	);
 
-	if (!response.ok) {
-		throw new Error('Location request failed');
-	}
+	const results = responses
+		.flatMap((data) => data.results ?? [])
+		.filter((location, index, locations) => {
+			return locations.findIndex((item) => item.id === location.id) === index;
+		})
+		.slice(0, count);
 
-	const data = await response.json();
-
-	if (!data.results || data.results.length === 0) {
+	if (results.length === 0) {
 		throw new Error('Location not found');
 	}
 
-	return data.results;
+	return results;
 }
 
 async function findLocation(query) {
@@ -346,10 +427,11 @@ function renderHourly(day) {
 
 searchInput.addEventListener('input', () => {
 	const query = searchInput.value.trim();
+	const requestId = ++suggestionRequestId;
 	clearTimeout(suggestionTimer);
+	hideSuggestions(true);
 
 	if (query.length < 3) {
-		hideSuggestions();
 		setSearchStatus('');
 		return;
 	}
@@ -357,11 +439,17 @@ searchInput.addEventListener('input', () => {
 	suggestionTimer = setTimeout(async () => {
 		try {
 			const locations = await searchLocations(query);
+			if (requestId !== suggestionRequestId || searchInput.value.trim() !== query) {
+				return;
+			}
 			renderSuggestions(locations);
 			setSearchStatus('');
 		} catch (error) {
+			if (requestId !== suggestionRequestId || searchInput.value.trim() !== query) {
+				return;
+			}
 			console.error(error);
-			hideSuggestions();
+			hideSuggestions(true);
 			setSearchStatus(error.message === 'Location not found' ? 'No matches' : 'Could not load suggestions', true);
 		}
 	}, 250);
