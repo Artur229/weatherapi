@@ -125,6 +125,7 @@ button {
 
 .site-header__search {
   position: relative;
+  z-index: 5;
 }
 
 .site-header__search-label {
@@ -202,6 +203,53 @@ button {
   animation: search-pulse 900ms ease-in-out infinite alternate;
 }
 
+.site-header__suggestions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 10;
+  display: none;
+  max-height: 260px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  border-radius: var(--radius-small);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+  list-style: none;
+}
+
+.site-header__suggestions--open {
+  display: block;
+}
+
+.site-header__suggestions button {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #202226;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.site-header__suggestions button:hover,
+.site-header__suggestions button:focus {
+  background: #f2f2f2;
+  outline: none;
+}
+
+.site-header__units-wrap {
+  position: relative;
+  justify-self: end;
+  z-index: 6;
+}
+
 .site-header__units {
   justify-self: end;
   display: inline-flex;
@@ -212,6 +260,40 @@ button {
   color: #73777d;
   font-size: clamp(19px, 1.5vw, 29px);
   font-weight: 700;
+}
+
+.site-header__units-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  display: none;
+  min-width: 190px;
+  padding: 6px;
+  border-radius: var(--radius-small);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.site-header__units-wrap--open .site-header__units-menu {
+  display: grid;
+  gap: 2px;
+}
+
+.site-header__units-menu button {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: #202226;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.site-header__units-menu button:hover,
+.site-header__units-menu button[aria-checked="true"] {
+  background: #f2f2f2;
 }
 
 .site-header__chevron {
@@ -376,6 +458,10 @@ button {
   color: white;
   font-size: 26px;
   line-height: 28px;
+}
+
+.weather-hero__bubble[hidden] {
+  display: none;
 }
 
 .weather-tabs {

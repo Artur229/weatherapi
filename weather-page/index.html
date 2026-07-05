@@ -25,12 +25,19 @@
             autocomplete="off"
           />
           <p class="site-header__search-status" aria-live="polite"></p>
+          <ul class="site-header__suggestions" aria-label="Location suggestions"></ul>
         </form>
 
-        <button class="site-header__units" type="button" aria-label="Change units and region">
-          °C, EN
-          <span class="site-header__chevron" aria-hidden="true"></span>
-        </button>
+        <div class="site-header__units-wrap">
+          <button class="site-header__units" type="button" aria-expanded="false" aria-label="Change temperature unit">
+            <span class="site-header__units-label">°C</span>
+            <span class="site-header__chevron" aria-hidden="true"></span>
+          </button>
+          <div class="site-header__units-menu" role="menu">
+            <button type="button" role="menuitemradio" aria-checked="true" data-unit="celsius">Celsius °C</button>
+            <button type="button" role="menuitemradio" aria-checked="false" data-unit="fahrenheit">Fahrenheit °F</button>
+          </div>
+        </div>
       </header>
 
       <main>
@@ -51,7 +58,7 @@
 
           <aside class="weather-hero__bubble" aria-label="Weather informer promotion">
             <p>Free weather widget for your website</p>
-            <button type="button" aria-label="Close widget preview">×</button>
+            <button class="weather-hero__bubble-close" type="button" aria-label="Close widget preview">×</button>
           </aside>
 
           <nav class="weather-tabs" aria-label="Forecast navigation">
